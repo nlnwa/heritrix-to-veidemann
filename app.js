@@ -55,18 +55,28 @@ const StreamArray = require('stream-json/streamers/StreamArray');
 const path = require('path');
 const fs =  require('fs');
 const {parse} = require ('url');
-const source = './input/heritrixSeeds.json';
+const inputDir = './input';
+const outputDir = './output';
+const source = 'heritrixSeeds.json';
 const schoolList = require("./skolerOgUniversiteter");
-const output = './output/veidemannSeeds.json';
-const errorUrls = './output/failed_heritrix_url.txt';
-const failed = './output/failed_heritrix_seeds.json';
+const output = 'veidemannSeeds.json';
+const errorUrls = 'failed_heritrix_url.txt';
+const failed = 'failed_heritrix_seeds.json';
+
+if (!fs.existsSync(inputDir)) {
+    fs.mkdirSync(inputDir);
+}
+
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir);
+}
 
 const inputStream = StreamArray.withParser();
-fs.createReadStream(path.join(__dirname, source)).pipe(inputStream.input);
+fs.createReadStream(path.join(__dirname, inputDir, source)).pipe(inputStream.input);
 
-const outputStream = fs.createWriteStream(output);
-const errorStream = fs.createWriteStream(errorUrls);
-const invalidSeedStream = fs.createWriteStream(failed);
+const outputStream = fs.createWriteStream(path.join(__dirname, outputDir,output));
+const errorStream = fs.createWriteStream(path.join(__dirname, outputDir, errorUrls));
+const invalidSeedStream = fs.createWriteStream(path.join(__dirname, outputDir, failed));
 
 const t0  = Date.now();
 
